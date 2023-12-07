@@ -10,7 +10,7 @@ import (
 type UserId string
 
 type User struct {
-	Id           UserId     `json:"id,omitempty" db:"user_id"`
+	ID           UserId     `json:"id,omitempty" db:"user_id"`
 	Email        *string    `json:"email" db:"email"`
 	PasswordHash *[]byte    `json:"-" db:"password_hash"`
 	CreatedAt    *time.Time `json:"-" db:"created_at"`
@@ -18,7 +18,15 @@ type User struct {
 	DeletedAt    *time.Time `json:"-" db:"deleted_at"`
 }
 
-// set password
+// Verify all requests fields  before create or uptdate
+func (u *User) Verify() error {
+	if u.Email == nil || (u.Email != nil && len(*u.Email) == 0) {
+		return errors.New("Email is required")
+	}
+	return nil
+}
+
+// set password updates a user's password
 func (u *User) SetPassword(password string) error {
 	hash, err := HashPassword(password)
 	if err != nil {
