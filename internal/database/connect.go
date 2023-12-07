@@ -19,7 +19,7 @@ func Connect() (*sqlx.DB, error) {
 	//Connect to database
 	dbURL := *databaseURL
 
-	logrus.Debug("Connecting to database...")
+	logrus.WithField("url", dbURL).Debug("Connecting to database...")
 	conn, err := sqlx.Open("postgres", dbURL)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not connect to database")
@@ -32,16 +32,21 @@ func Connect() (*sqlx.DB, error) {
 		return nil, err
 	}
 
-	return conn, nil
+	//migrate database schema
+	if err := migrateDb(conn.DB); err != nil {
+		return nil, errors.Wrap(err, "could not migrate database")
+	}
 
+	return conn, nil
 }
 
+// New - creates new database
 func New() (Database, error) {
 	conn, err := Connect()
 	if err != nil {
 		return nil, err
 	}
-	d := conn.DB
+	d := &database{conn: conn}
 	return d, nil
 }
 
@@ -61,6 +66,6 @@ func waitForDB(conn *sqlx.DB) error {
 	case <-ready:
 		return nil
 	case <-time.After(time.Duration((*databaseTimeout) * int64(time.Millisecond))):
-		return errors.New("database not ready")
+		return errors.New("Database not ready")
 	}
 }
