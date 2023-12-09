@@ -6,14 +6,13 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// Postgres Error string for a unique index violation
+// UniqueViolation Postgres Error string for a unique index violation
 const UniqueViolation = "unique_violation"
 
 // Database - interface
 type Database interface {
 	UsersDB
 
-	//
 	io.Closer
 }
 

@@ -2,4 +2,4 @@ package config
 
 import "flag"
 
-var Datadirectory = flag.String("data-directory", "", "Path for loading templateand migration script")
+var DataDirectory = flag.String("data-directory", "", "Path for loading template and migration script")

@@ -1,9 +1,13 @@
 package main
 
 import (
+	"errors"
+	"flag"
 	"net/http"
 
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
+	_ "github.com/mattes/migrate/source/file"
 	"github.com/ntnghiatn/financial-app-backend/internal/api"
 	"github.com/ntnghiatn/financial-app-backend/internal/config"
 	"github.com/ntnghiatn/financial-app-backend/internal/database"
@@ -11,6 +15,7 @@ import (
 )
 
 func main() {
+	flag.Parse()
 	//
 	log.SetLevel(log.DebugLevel)
 	log.WithField("version", config.Version).Debug("starting Server....")
@@ -35,7 +40,7 @@ func main() {
 	}
 
 	//
-	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.WithError(err).Error("Server failed!!")
 	}
 

@@ -11,15 +11,15 @@ import (
 )
 
 var (
-	databaseURL     = flag.String("database-url", "postgres://postgres:password@localhost:5432/postgres?sslmode=disable", "Database URL")
-	databaseTimeout = flag.Int64("database-timeout-ms", 2000, "")
+	databaseURL     = flag.String("database-url", "postgres://root:password@localhost:5432/ciquandb?sslmode=disable", "Database URL")
+	databaseTimeout = flag.Int64("database-timeout-ms", 10000, "")
 )
 
 func Connect() (*sqlx.DB, error) {
 	//Connect to database
 	dbURL := *databaseURL
 
-	logrus.WithField("url", dbURL).Debug("Connecting to database...")
+	logrus.WithField("url", dbURL).Debug("Connecting to database::: ", dbURL)
 	conn, err := sqlx.Open("postgres", dbURL)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not connect to database")
@@ -54,7 +54,7 @@ func waitForDB(conn *sqlx.DB) error {
 	ready := make(chan struct{})
 	go func() {
 		for {
-			if err := conn.Ping(); err != nil {
+			if err := conn.Ping(); err == nil {
 				close(ready)
 				return
 			}

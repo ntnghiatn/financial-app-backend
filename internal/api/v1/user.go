@@ -32,9 +32,9 @@ func (api *UserAPI) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//
-	log = log.WithFields((logrus.Fields{
+	log = log.WithFields(logrus.Fields{
 		"email": userParameters.Email,
-	}))
+	})
 
 	//
 	if err := userParameters.Verify(); err != nil {
@@ -56,5 +56,7 @@ func (api *UserAPI) Create(w http.ResponseWriter, r *http.Request) {
 		Email:        userParameters.Email,
 		PasswordHash: &hashed,
 	}
+
+	log.Info(newUser)
 
 }
