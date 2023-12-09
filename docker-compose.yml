@@ -3,17 +3,18 @@ services:
   db: 
     image: postgres:10.5-alpine
     ports: 
-      - 5432:5432
+      - "5432:5432"
     environment:
+      POSTGRES_USER: root
       POSTGRES_PASSWORD: password
   
-  server:
-    build: .
-    links: 
-      - db:db
-    ports:
-      - 8088:8088
-    environment:
-      DATABASE_URL: 'postgres://postgres:password@db:5432/postgres?sslmode=disable'
-      DATABASE_TIMEOUT: 10000
-      DATA_DIRECTORY: '/go/src/github.com/ntnghiatn/financial-app-backend/'
+#  server:
+#    build: .
+#    links:
+#      - db:db
+#    ports:
+#      - "8088:8088"
+#    environment:
+#      DATABASE_URL: 'postgres://postgres:password@db:5432/postgres?sslmode=disable'
+#      DATABASE_TIMEOUT: 10000
+#      DATA_DIRECTORY: '/go/src/github.com/ntnghiatn/financial-app-backend/'
